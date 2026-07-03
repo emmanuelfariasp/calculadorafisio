@@ -1,796 +1,687 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora de Nota - Fisiología</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora de Final - Fisiologia</title>
   <style>
-    :root{
-      --card:#ffffff;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --line:#e5e7eb;
-      --primary:#2563eb;
-      --primary2:#1d4ed8;
-      --ok:#059669;
-      --warn:#d97706;
-      --bad:#dc2626;
-      --soft:#eff6ff;
-      --soft2:#f9fafb;
-      --radius:18px;
-      --shadow:0 12px 30px rgba(15,23,42,.08);
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #667085;
+      --line: #d8dee9;
+      --primary: #155eef;
+      --primary-dark: #0f49bd;
+      --ok: #087443;
+      --warn: #b54708;
+      --bad: #b42318;
+      --soft-blue: #eaf1ff;
+      --soft-green: #e9f8ef;
+      --soft-warn: #fff4e5;
+      --soft-bad: #fdecec;
+      --shadow: 0 18px 50px rgba(23, 32, 51, 0.10);
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
       font-family: Arial, Helvetica, sans-serif;
-      background:linear-gradient(135deg,#eef2ff 0%,#f8fafc 55%,#ecfeff 100%);
-      color:var(--text);
-      line-height:1.45;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(21, 94, 239, 0.12), transparent 32rem),
+        linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
     }
-    .wrap{
-      max-width:1220px;
-      margin:0 auto;
-      padding:28px 16px 48px;
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 44px;
     }
-    .hero,.card{
-      background:var(--card);
-      border:1px solid var(--line);
-      box-shadow:var(--shadow);
-      border-radius:var(--radius);
-      padding:22px;
+
+    .header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 18px;
     }
-    .hero{margin-bottom:18px}
-    h1{margin:0 0 8px;font-size:30px}
-    h2{margin:0 0 14px;font-size:20px}
-    h3{margin:20px 0 10px;font-size:17px}
-    p{margin:8px 0;color:var(--muted)}
-    .grid{
-      display:grid;
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3vw, 2.65rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.15rem;
+    }
+
+    h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 760px;
+      line-height: 1.5;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(300px, 430px) 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-panel {
+      padding: 18px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .field-grid {
+      display: grid;
       grid-template-columns: 1fr 1fr;
-      gap:18px;
-      align-items:start;
+      gap: 12px;
     }
-    .inputs{
-      display:grid;
-      grid-template-columns: repeat(2,minmax(0,1fr));
-      gap:12px;
+
+    .full {
+      grid-column: 1 / -1;
     }
-    label{
-      display:block;
-      font-size:13px;
-      font-weight:700;
-      color:#374151;
-      margin:0 0 6px;
+
+    label {
+      display: grid;
+      gap: 7px;
+      font-weight: 700;
+      font-size: 0.94rem;
     }
-    input, select{
-      width:100%;
-      padding:12px 12px;
-      border:1px solid #d1d5db;
-      border-radius:12px;
-      font-size:16px;
-      outline:none;
-      background:#fff;
+
+    .hint {
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 0.84rem;
+      line-height: 1.35;
     }
-    input:focus, select:focus{
-      border-color:var(--primary);
-      box-shadow:0 0 0 3px rgba(37,99,235,.13);
+
+    input {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #c9d2e3;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 1rem;
+      color: var(--text);
+      background: #fff;
+      outline: none;
     }
-    .full{grid-column:1/-1}
-    .btns{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:14px;
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(21, 94, 239, 0.12);
     }
-    button{
-      border:none;
-      border-radius:12px;
-      padding:12px 16px;
-      font-size:15px;
-      font-weight:700;
-      cursor:pointer;
-      background:var(--primary);
-      color:#fff;
-      transition:.15s;
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
     }
-    button:hover{background:var(--primary2)}
-    button.secondary{
-      background:#e5e7eb;
-      color:#111827;
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      min-height: 42px;
+      padding: 0 14px;
+      font-weight: 700;
+      cursor: pointer;
     }
-    button.secondary:hover{background:#d1d5db}
-    .summary{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-      margin-top:10px;
+
+    .primary-btn {
+      background: var(--primary);
+      color: white;
+      flex: 1;
     }
-    .metric{
-      background:var(--soft2);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px;
+
+    .primary-btn:hover {
+      background: var(--primary-dark);
     }
-    .metric span{
-      display:block;
-      color:var(--muted);
-      font-size:12px;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.04em;
+
+    .ghost-btn {
+      background: #edf2f7;
+      color: var(--text);
     }
-    .metric strong{
-      display:block;
-      font-size:24px;
-      margin-top:4px;
+
+    .results {
+      display: grid;
+      gap: 14px;
     }
-    .ok{color:var(--ok)}
-    .warn{color:var(--warn)}
-    .bad{color:var(--bad)}
-    table{
-      width:100%;
-      border-collapse:collapse;
-      overflow:hidden;
-      border-radius:14px;
-      font-size:14px;
+
+    .card {
+      padding: 18px;
     }
-    th, td{
-      border-bottom:1px solid var(--line);
-      text-align:left;
-      padding:10px 9px;
-      vertical-align:top;
+
+    .explain-grid,
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
     }
-    th{
-      background:var(--soft);
-      color:#1e3a8a;
-      font-size:13px;
-      position:sticky;
-      top:0;
-      z-index:1;
+
+    .explain-box,
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fbff;
+      padding: 12px;
+      min-width: 0;
     }
-    tr:last-child td{border-bottom:none}
-    .tableWrap{
-      max-height:520px;
-      overflow:auto;
-      border:1px solid var(--line);
-      border-radius:14px;
+
+    .explain-box strong,
+    .metric span {
+      display: block;
+      margin-bottom: 4px;
     }
-    .pill{
-      display:inline-block;
-      border-radius:999px;
-      padding:4px 9px;
-      font-weight:700;
-      font-size:12px;
-      background:#f3f4f6;
-      color:#374151;
-      white-space:nowrap;
+
+    .explain-box p,
+    .metric span,
+    .small {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.4;
     }
-    .pill.ok{background:#d1fae5;color:#065f46}
-    .pill.warn{background:#fef3c7;color:#92400e}
-    .pill.bad{background:#fee2e2;color:#991b1b}
-    .pill.info{background:#dbeafe;color:#1e40af}
-    .note{
-      background:#fff7ed;
-      border:1px solid #fed7aa;
-      color:#9a3412;
-      border-radius:14px;
-      padding:12px;
-      margin-top:12px;
-      font-size:14px;
+
+    .metric strong {
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1.12;
     }
-    .formula{
-      background:#111827;
-      color:#e5e7eb;
-      padding:14px;
-      border-radius:14px;
-      font-family: Consolas, monospace;
-      font-size:13px;
-      overflow:auto;
-      margin-top:10px;
-      white-space:pre-wrap;
+
+    .status-card {
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--panel);
     }
-    .small{font-size:13px;color:var(--muted)}
-    .hide{display:none}
-    .targetCards{
-      display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:10px;
-      margin-top:10px;
+
+    .status-card.good {
+      border-color: #9bd8b8;
+      background: var(--soft-green);
     }
-    .mini{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      background:var(--soft2);
+
+    .status-card.warn {
+      border-color: #f7c475;
+      background: var(--soft-warn);
     }
-    .mini b{font-size:16px}
-    .dependencyGrid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:18px;
-      align-items:start;
+
+    .status-card.bad {
+      border-color: #f4aaa5;
+      background: var(--soft-bad);
     }
-    .indiceTitle{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin:4px 0 10px;
+
+    .status-card.info {
+      border-color: #b8ccff;
+      background: var(--soft-blue);
     }
-    .indiceTitle h3{margin:0}
-    .mutedBox{
-      background:#f8fafc;
-      border:1px dashed #cbd5e1;
-      border-radius:14px;
-      padding:12px;
-      margin:10px 0;
+
+    .status-card p {
+      line-height: 1.45;
     }
-    @media(max-width:980px){
-      .grid{grid-template-columns:1fr}
-      .dependencyGrid{grid-template-columns:1fr}
-      .targetCards{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
     }
-    @media(max-width:650px){
-      .inputs{grid-template-columns:1fr}
-      .summary{grid-template-columns:1fr}
-      .targetCards{grid-template-columns:1fr}
-      h1{font-size:24px}
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
     }
-    @media (prefers-color-scheme: dark){
-      :root{
-        --card:#0f172a;
-        --text:#e5e7eb;
-        --muted:#9ca3af;
-        --line:#1f2937;
-        --soft:#172554;
-        --soft2:#111827;
-        --shadow:0 12px 30px rgba(0,0,0,.25);
+
+    th,
+    td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      background: #eef4ff;
+      color: #123d8c;
+      font-size: 0.86rem;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      white-space: nowrap;
+    }
+
+    .badge.ok {
+      background: #dff7ea;
+      color: var(--ok);
+    }
+
+    .badge.warn {
+      background: #fff0d6;
+      color: var(--warn);
+    }
+
+    .badge.bad {
+      background: #fde1df;
+      color: var(--bad);
+    }
+
+    .formula {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #101828;
+      color: #f2f4f7;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    .ok-text {
+      color: var(--ok);
+      font-weight: 700;
+    }
+
+    .warn-text {
+      color: var(--warn);
+      font-weight: 700;
+    }
+
+    .bad-text {
+      color: var(--bad);
+      font-weight: 700;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
       }
-      body{background:linear-gradient(135deg,#020617 0%,#111827 100%)}
-      input, select{background:#020617;color:#e5e7eb;border-color:#374151}
-      label{color:#d1d5db}
-      button.secondary{background:#374151;color:#fff}
-      button.secondary:hover{background:#4b5563}
-      th{color:#bfdbfe}
-      .formula{background:#020617}
-      .mutedBox{background:#020617;border-color:#334155}
+
+      .form-panel {
+        position: static;
+      }
+
+      .summary-grid,
+      .explain-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      main {
+        width: min(100% - 20px, 1180px);
+        padding-top: 20px;
+      }
+
+      .header {
+        display: block;
+      }
+
+      .field-grid,
+      .summary-grid,
+      .explain-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="hero">
-      <h1>Calculadora de Nota de Fisiología</h1>
-      <p>
-        Calcula cuánto necesitas en el <b>Ateneo oral</b> y en el <b>Examen Final</b> para alcanzar cada índice.
-      </p>
-      <p class="small">
-        Las parciales aparecen vacías para que cada alumno coloque sus propias notas.
-      </p>
+  <main>
+    <header class="header">
+      <div>
+        <h1>Calculadora de Final de Fisiologia</h1>
+        <p class="subtitle">
+          Coloca tus notas ya hechas y mira exactamente cuanto necesitas sacar en la Final
+          para llegar a cada indice academico.
+        </p>
+      </div>
+    </header>
+
+    <section class="panel card" aria-labelledby="como-funciona">
+      <h2 id="como-funciona">Como funciona el aplicativo</h2>
+      <div class="explain-grid">
+        <div class="explain-box">
+          <strong>1. Coloca tus notas</strong>
+          <p>Parcial 1 y Parcial 2 van de 0 a 100. Cada entrega va de 1 a 10. El Ateneo oral va de 1 a 30.</p>
+        </div>
+        <div class="explain-box">
+          <strong>2. El app calcula la Tarea Academica</strong>
+          <p>Las entregas valen 30% y el Ateneo oral vale 70%. El Ateneo se convierte automaticamente a porcentaje.</p>
+        </div>
+        <div class="explain-box">
+          <strong>3. El app calcula la Final necesaria</strong>
+          <p>La Media Parcial vale 60% del promedio global. La Final vale 40%.</p>
+        </div>
+      </div>
+      <div class="formula">Tarea Academica = 30% entregas + 70% Ateneo oral
+Media Parcial = (Parcial 1 + Parcial 2 + Tarea Academica) / 3
+Promedio Global = 60% Media Parcial + 40% Final
+
+Indices:
+5 = 90 a 100 | 4 = 80 a 89 | 3 = 70 a 79 | 2 = 60 a 69 | 1 = insuficiente</div>
     </section>
 
-    <section class="card" style="margin-bottom:18px;">
-      <h2>¿Cómo funciona esta calculadora?</h2>
-      <p>
-        Esta calculadora sirve para saber qué nota necesitas en el <b>Ateneo oral</b> y en el <b>Examen Final</b>
-        para alcanzar cada índice en Fisiología.
-      </p>
-
-      <div class="mutedBox">
-        <b>1. Primero completa tus notas ya hechas:</b>
-        <p class="small">
-          Escribe tu nota de <b>Parcial 1</b>, <b>Parcial 2</b> y las <b>4 entregas</b>. 
-          Las parciales van de <b>0 a 100</b>, pero las entregas van de <b>0 a 10</b>.
-        </p>
-      </div>
-
-      <div class="mutedBox">
-        <b>2. Después simula el Ateneo y la Final:</b>
-        <p class="small">
-          En “Ateneo / Examen oral” puedes probar diferentes notas para ver cuánto necesitarías sacar en la Final.
-          En “Examen final” puedes probar una nota esperada para ver cuánto necesitarías en el Ateneo.
-        </p>
-      </div>
-
-      <div class="mutedBox">
-        <b>3. La calculadora hace estas cuentas automáticamente:</b>
-        <p class="small">
-          La <b>Tarea Académica</b> se calcula así: 70% Ateneo oral + 30% promedio de las entregas.
-          Como las entregas son de 0 a 10, la calculadora las convierte a porcentaje multiplicando por 10.
-        </p>
-        <p class="small">
-          Después calcula la <b>Media Parcial</b>: promedio entre Parcial 1, Parcial 2 y Tarea Académica.
-          Para poder hacer el Examen Final, necesitas tener como mínimo <b>60%</b> en esa Media Parcial.
-        </p>
-        <p class="small">
-          Por último, calcula el <b>Promedio Global</b>: 60% de la Media Parcial + 40% del Examen Final.
-        </p>
-      </div>
-
-      <div class="mutedBox">
-        <b>4. Cómo interpretar los índices:</b>
-        <p class="small">
-          <b>Índice 5:</b> 90 a 100. &nbsp;
-          <b>Índice 4:</b> 80 a 89. &nbsp;
-          <b>Índice 3:</b> 70 a 79. &nbsp;
-          <b>Índice 2:</b> 60 a 69. &nbsp;
-          <b>Índice 1:</b> insuficiente.
-        </p>
-      </div>
-
-      <div class="note">
-        La parte más importante es la sección <b>“Relación de dependencia: Ateneo oral × Final”</b>.
-        Allí puedes ver, para cada índice, cuánto necesitas en la Final dependiendo de la nota que saques en el Ateneo.
-      </div>
-    </section>
-
-    <div class="grid">
-      <section class="card">
-        <h2>1) Completa tus notas</h2>
-        <div class="inputs">
-          <div>
-            <label for="p1">Parcial 1 <span class="small">(0 a 100)</span></label>
-            <input id="p1" type="number" min="0" max="100" step="0.01" placeholder="0 a 100">
-          </div>
-          <div>
-            <label for="p2">Parcial 2 <span class="small">(0 a 100)</span></label>
-            <input id="p2" type="number" min="0" max="100" step="0.01" placeholder="0 a 100">
-          </div>
-
-          <div>
-            <label for="e1">Entrega 1 <span class="small">(0 a 10)</span></label>
-            <input id="e1" type="number" min="0" max="10" step="0.01" placeholder="0 a 10">
-          </div>
-          <div>
-            <label for="e2">Entrega 2 <span class="small">(0 a 10)</span></label>
-            <input id="e2" type="number" min="0" max="10" step="0.01" placeholder="0 a 10">
-          </div>
-          <div>
-            <label for="e3">Entrega 3 <span class="small">(0 a 10)</span></label>
-            <input id="e3" type="number" min="0" max="10" step="0.01" placeholder="0 a 10">
-          </div>
-          <div>
-            <label for="e4">Entrega 4 <span class="small">(0 a 10)</span></label>
-            <input id="e4" type="number" min="0" max="10" step="0.01" placeholder="0 a 10">
-          </div>
-
-          <div>
-            <label for="oral">Ateneo / Examen oral <span class="small">(0 a 100)</span></label>
-            <input id="oral" type="number" min="0" max="100" step="0.01" placeholder="Simula 0 a 100">
-          </div>
-          <div>
-            <label for="final">Examen final <span class="small">(0 a 100)</span></label>
-            <input id="final" type="number" min="0" max="100" step="0.01" placeholder="Simula 0 a 100">
-          </div>
-
-          <div>
-            <label for="target">Índice objetivo</label>
-            <select id="target">
-              <option value="60">Índice 2 — mínimo 60</option>
-              <option value="70">Índice 3 — mínimo 70</option>
-              <option value="80">Índice 4 — mínimo 80</option>
-              <option value="90" selected>Índice 5 — mínimo 90</option>
-            </select>
-          </div>
-          <div>
-            <label for="step">Intervalo de la tabla</label>
-            <select id="step">
-              <option value="5">De 5 en 5</option>
-              <option value="10" selected>De 10 en 10</option>
-            </select>
-          </div>
+    <div class="layout" style="margin-top: 18px;">
+      <section class="panel form-panel" aria-labelledby="datos">
+        <h2 id="datos">Tus notas</h2>
+        <div class="field-grid">
+          <label>
+            Parcial 1
+            <span class="hint">0 a 100%</span>
+            <input id="p1" type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="Ej.: 77">
+          </label>
+          <label>
+            Parcial 2
+            <span class="hint">0 a 100%</span>
+            <input id="p2" type="number" min="0" max="100" step="0.01" inputmode="decimal" placeholder="Ej.: 97">
+          </label>
+          <label>
+            Entrega 1
+            <span class="hint">1 a 10</span>
+            <input id="e1" type="number" min="1" max="10" step="0.01" inputmode="decimal" placeholder="Ej.: 10">
+          </label>
+          <label>
+            Entrega 2
+            <span class="hint">1 a 10</span>
+            <input id="e2" type="number" min="1" max="10" step="0.01" inputmode="decimal" placeholder="Ej.: 10">
+          </label>
+          <label>
+            Entrega 3
+            <span class="hint">1 a 10</span>
+            <input id="e3" type="number" min="1" max="10" step="0.01" inputmode="decimal" placeholder="Ej.: 10">
+          </label>
+          <label>
+            Entrega 4
+            <span class="hint">1 a 10</span>
+            <input id="e4" type="number" min="1" max="10" step="0.01" inputmode="decimal" placeholder="Ej.: 8">
+          </label>
+          <label class="full">
+            Ateneo oral
+            <span class="hint">1 a 30 puntos</span>
+            <input id="ateneo" type="number" min="1" max="30" step="0.01" inputmode="decimal" placeholder="Ej.: 30">
+          </label>
         </div>
-
-        <div class="btns">
-          <button onclick="calculate()">Calcular</button>
-          <button class="secondary" onclick="clearSimulation()">Limpiar Ateneo/Final</button>
-          <button class="secondary" onclick="clearAll()">Limpiar todo</button>
-          <button class="secondary" onclick="fillMaxEntregas()">Entregas = 10</button>
+        <div class="actions">
+          <button class="primary-btn" id="calculate" type="button">Calcular</button>
+          <button class="ghost-btn" id="clear" type="button">Limpiar</button>
         </div>
-
-        <div id="inputWarning" class="note hide"></div>
       </section>
 
-      <section class="card">
-        <h2>2) Resultado general</h2>
-        <div class="summary">
-          <div class="metric">
-            <span>Media de entregas</span>
-            <strong id="avgEntregas">—</strong>
-          </div>
-          <div class="metric">
-            <span>Entregas convertidas</span>
-            <strong id="avgEntregasPct">—</strong>
-          </div>
-          <div class="metric">
-            <span>Tarea Académica</span>
-            <strong id="ta">—</strong>
-          </div>
-          <div class="metric">
-            <span>Media Parcial</span>
-            <strong id="mp">—</strong>
-          </div>
-          <div class="metric full">
-            <span>Promedio Global</span>
-            <strong id="global">—</strong>
-          </div>
+      <section class="results" aria-live="polite">
+        <div id="status" class="status-card info">
+          <p>Completa tus notas para ver cuanto necesitas en la Final.</p>
         </div>
-        <div id="status" class="note">Completa las notas para ver el resultado.</div>
-        <div class="formula">Entregas: se cargan de 0 a 10.
-Media de entregas en % = media de entregas × 10
 
-Tarea Académica = 70% Ateneo + 30% entregas en %
-Media Parcial = (Parcial 1 + Parcial 2 + Tarea Académica) ÷ 3
-Promedio Global = 60% Media Parcial + 40% Final</div>
-      </section>
-    </div>
-
-    <section class="card" style="margin-top:18px;">
-      <h2>3) Resumen por índice con el Ateneo simulado</h2>
-      <p class="small">
-        Usa la nota colocada en “Ateneo / Examen oral” y calcula qué Final necesitas para cada índice.
-      </p>
-      <div id="finalNeeds"></div>
-    </section>
-
-    <section class="card" style="margin-top:18px;">
-      <h2>4) Resumen por índice con la Final simulada</h2>
-      <p class="small">
-        Usa la nota colocada en “Examen final” y calcula qué Ateneo necesitas para cada índice.
-      </p>
-      <div id="oralNeeds"></div>
-    </section>
-
-    <section class="card" style="margin-top:18px;">
-      <h2>5) Relación de dependencia: Ateneo oral × Final</h2>
-      <p class="small">
-        Aquí ves cómo la nota del Ateneo cambia la Final necesaria para cada índice.
-      </p>
-      <div id="dependency"></div>
-    </section>
-
-    <section class="card" style="margin-top:18px;">
-      <h2>6) Matriz rápida para el índice seleccionado</h2>
-      <p class="small">
-        Usa el índice objetivo seleccionado arriba. Muestra la Final necesaria para cada nota posible de Ateneo.
-      </p>
-      <div id="matrix"></div>
-    </section>
-  </div>
-
-  <script>
-    const ids = ["p1","p2","e1","e2","e3","e4","oral","final","target","step"];
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      el.addEventListener("input", calculate);
-      el.addEventListener("change", calculate);
-    });
-
-    const objectives = [
-      {label:"Índice 2", min:60},
-      {label:"Índice 3", min:70},
-      {label:"Índice 4", min:80},
-      {label:"Índice 5", min:90}
-    ];
-
-    function num(id){
-      const v = parseFloat(document.getElementById(id).value);
-      return Number.isFinite(v) ? v : null;
-    }
-
-    function fmt(v){
-      if(v === null || !Number.isFinite(v)) return "—";
-      return (Math.round(v * 100) / 100).toFixed(2);
-    }
-
-    function gradeIndex(global){
-      if(global === null || !Number.isFinite(global)) return "—";
-      if(global >= 90) return "Índice 5";
-      if(global >= 80) return "Índice 4";
-      if(global >= 70) return "Índice 3";
-      if(global >= 60) return "Índice 2";
-      return "Índice 1";
-    }
-
-    function validateBasic(values){
-      const warnings = [];
-      for(const name of ["Parcial 1","Parcial 2","Ateneo","Final"]){
-        const value = values[name];
-        if(value !== null && (value < 0 || value > 100)){
-          warnings.push(name + " debe estar entre 0 y 100.");
-        }
-      }
-      for(const name of ["Entrega 1","Entrega 2","Entrega 3","Entrega 4"]){
-        const value = values[name];
-        if(value !== null && (value < 0 || value > 10)){
-          warnings.push(name + " debe estar entre 0 y 10.");
-        }
-      }
-
-      const warnBox = document.getElementById("inputWarning");
-      if(warnings.length){
-        warnBox.classList.remove("hide");
-        warnBox.innerHTML = warnings.join("<br>");
-      } else {
-        warnBox.classList.add("hide");
-        warnBox.innerHTML = "";
-      }
-      return warnings.length === 0;
-    }
-
-    function getCore(){
-      const p1 = num("p1");
-      const p2 = num("p2");
-      const e = [num("e1"), num("e2"), num("e3"), num("e4")];
-      const oral = num("oral"), finalExam = num("final");
-
-      validateBasic({
-        "Parcial 1":p1, "Parcial 2":p2,
-        "Entrega 1":e[0], "Entrega 2":e[1], "Entrega 3":e[2], "Entrega 4":e[3],
-        Ateneo:oral, Final:finalExam
-      });
-
-      const entregasComplete = e.every(v => v !== null);
-      const avgEntregas = entregasComplete ? e.reduce((a,b)=>a+b,0)/4 : null;
-      const avgEntregasPct = avgEntregas !== null ? avgEntregas * 10 : null;
-      const ta = (avgEntregasPct !== null && oral !== null) ? 0.7*oral + 0.3*avgEntregasPct : null;
-      const mp = (p1 !== null && p2 !== null && ta !== null) ? (p1+p2+ta)/3 : null;
-      const global = (mp !== null && finalExam !== null) ? 0.6*mp + 0.4*finalExam : null;
-
-      return {p1,p2,oral,finalExam,avgEntregas,avgEntregasPct,ta,mp,global,entregasComplete};
-    }
-
-    function calcTA(oral, avgEntregasPct){
-      return 0.7*oral + 0.3*avgEntregasPct;
-    }
-
-    function calcMP(p1, p2, oral, avgEntregasPct){
-      const ta = calcTA(oral, avgEntregasPct);
-      return (p1 + p2 + ta) / 3;
-    }
-
-    function requiredFinal(target, mp){
-      return (target - 0.6*mp)/0.4;
-    }
-
-    function requiredOralForTarget(target, p1, p2, avgEntregasPct, finalExam){
-      const neededMp = (target - 0.4*finalExam)/0.6;
-      const neededTA = (neededMp * 3) - p1 - p2;
-      return (neededTA - 0.3*avgEntregasPct) / 0.7;
-    }
-
-    function requiredOralForHabilitation(p1, p2, avgEntregasPct){
-      const neededTA = (60 * 3) - p1 - p2;
-      return (neededTA - 0.3*avgEntregasPct) / 0.7;
-    }
-
-    function finalStatus(required, mp){
-      if(mp < 60) return {txt:"No habilita", cls:"bad", detail:"La Media Parcial queda bajo 60."};
-      if(required <= 0) return {txt:"Ya alcanza con 0", cls:"ok", detail:"Con esa Media Parcial ya superas el objetivo."};
-      if(required <= 100) return {txt:fmt(required), cls:"warn", detail:"Final mínima necesaria."};
-      return {txt:"Imposible: " + fmt(required), cls:"bad", detail:"Necesitarías más de 100 en la Final."};
-    }
-
-    function oralStatus(required){
-      if(required <= 0) return {txt:"Ya alcanza con 0", cls:"ok"};
-      if(required <= 100) return {txt:fmt(required), cls:"warn"};
-      return {txt:"Imposible: " + fmt(required), cls:"bad"};
-    }
-
-    function calculate(){
-      const c = getCore();
-
-      document.getElementById("avgEntregas").textContent = c.avgEntregas === null ? "—" : fmt(c.avgEntregas) + " / 10";
-      document.getElementById("avgEntregasPct").textContent = c.avgEntregasPct === null ? "—" : fmt(c.avgEntregasPct) + "%";
-      document.getElementById("ta").textContent = fmt(c.ta);
-      document.getElementById("mp").textContent = fmt(c.mp);
-      document.getElementById("global").textContent = fmt(c.global);
-
-      const status = document.getElementById("status");
-      if(c.global !== null){
-        const idx = gradeIndex(c.global);
-        const pass = c.mp >= 60 && c.global >= 60;
-        status.innerHTML = `Con estos datos tu promedio global sería <b>${fmt(c.global)}</b> → <b>${idx}</b>.<br>` +
-                           (c.mp >= 60 ? `<span class="ok">Estás habilitado para Final por Media Parcial.</span>` : `<span class="bad">No estás habilitado para Final porque la Media Parcial está bajo 60.</span>`) +
-                           (pass ? `<br><span class="ok">Resultado global aprobado según la escala.</span>` : `<br><span class="bad">Resultado global insuficiente según la escala.</span>`);
-      } else if(c.mp !== null){
-        status.innerHTML = c.mp >= 60
-          ? `<span class="ok">Con este Ateneo, tu Media Parcial sería ${fmt(c.mp)}. Estarías habilitado para la Final.</span>`
-          : `<span class="bad">Con este Ateneo, tu Media Parcial sería ${fmt(c.mp)}. No llegarías al mínimo de 60 para hacer la Final.</span>`;
-      } else {
-        status.textContent = "Completa las notas para ver el resultado.";
-      }
-
-      renderFinalNeeds(c);
-      renderOralNeeds(c);
-      renderDependency(c);
-      renderMatrix(c);
-    }
-
-    function renderFinalNeeds(c){
-      const box = document.getElementById("finalNeeds");
-      if(c.p1 === null || c.p2 === null || c.avgEntregasPct === null || c.oral === null){
-        box.innerHTML = `<div class="note">Falta completar Parcial 1, Parcial 2, las 4 entregas y la nota simulada del Ateneo.</div>`;
-        return;
-      }
-      const ta = calcTA(c.oral, c.avgEntregasPct);
-      const mp = calcMP(c.p1, c.p2, c.oral, c.avgEntregasPct);
-      const habil = mp >= 60;
-
-      let rows = objectives.map(obj => {
-        const req = requiredFinal(obj.min, mp);
-        const s = finalStatus(req, mp);
-        return `<tr>
-          <td><b>${obj.label}</b></td>
-          <td>${obj.min}</td>
-          <td><span class="pill ${s.cls}">${s.txt}</span></td>
-          <td>${s.detail}</td>
-        </tr>`;
-      }).join("");
-
-      box.innerHTML =
-        `<p><b>Con Ateneo = ${fmt(c.oral)}</b>, tu Tarea Académica sería <b>${fmt(ta)}</b> y tu Media Parcial sería <b>${fmt(mp)}</b>.</p>` +
-        (habil ? `<p class="ok"><b>Habilitado para Final.</b></p>` : `<p class="bad"><b>No habilitado para Final.</b> Necesitas mejorar el Ateneo para alcanzar Media Parcial 60.</p>`) +
-        `<div class="tableWrap"><table><thead><tr><th>Objetivo</th><th>Promedio global mínimo</th><th>Final necesaria</th><th>Lectura</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-    }
-
-    function renderOralNeeds(c){
-      const box = document.getElementById("oralNeeds");
-      if(c.p1 === null || c.p2 === null || c.avgEntregasPct === null || c.finalExam === null){
-        box.innerHTML = `<div class="note">Falta completar Parcial 1, Parcial 2, las 4 entregas y la nota simulada de la Final.</div>`;
-        return;
-      }
-      const habilOral = requiredOralForHabilitation(c.p1, c.p2, c.avgEntregasPct);
-      let habilS = oralStatus(habilOral);
-
-      let rows = `<tr>
-        <td><b>Habilitación a Final</b></td>
-        <td>Media Parcial ≥ 60</td>
-        <td><span class="pill ${habilS.cls}">${habilS.txt}</span></td>
-      </tr>`;
-
-      rows += objectives.map(obj => {
-        const req = requiredOralForTarget(obj.min, c.p1, c.p2, c.avgEntregasPct, c.finalExam);
-        const s = oralStatus(req);
-        const habilTxt = req < habilOral ? `Para estar habilitado, mínimo Ateneo ${fmt(Math.max(0, habilOral))}` : "También cumple habilitación si está dentro de 0 a 100.";
-        return `<tr>
-          <td><b>${obj.label}</b></td>
-          <td>${obj.min}</td>
-          <td><span class="pill ${s.cls}">${s.txt}</span><br><span class="small">${habilTxt}</span></td>
-        </tr>`;
-      }).join("");
-
-      box.innerHTML =
-        `<p><b>Con Final esperada = ${fmt(c.finalExam)}</b>, estos serían los Ateneos necesarios.</p>` +
-        `<div class="tableWrap"><table><thead><tr><th>Objetivo</th><th>Mínimo exigido</th><th>Ateneo necesario</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-    }
-
-    function renderDependency(c){
-      const box = document.getElementById("dependency");
-      const step = parseInt(document.getElementById("step").value, 10);
-      if(c.p1 === null || c.p2 === null || c.avgEntregasPct === null){
-        box.innerHTML = `<div class="note">Falta completar Parcial 1, Parcial 2 y las 4 entregas.</div>`;
-        return;
-      }
-
-      const habilOral = requiredOralForHabilitation(c.p1, c.p2, c.avgEntregasPct);
-      const habilS = oralStatus(habilOral);
-
-      let quickCards = objectives.map(obj => {
-        let best = null;
-        for(let oral=0; oral<=100; oral+=0.5){
-          const mp = calcMP(c.p1, c.p2, oral, c.avgEntregasPct);
-          const rf = requiredFinal(obj.min, mp);
-          if(mp >= 60 && rf <= 100){
-            best = {oral, rf: Math.max(0, rf)};
-            break;
-          }
-        }
-        if(best === null){
-          return `<div class="mini"><b>${obj.label}</b><br><span class="pill bad">No posible</span><p class="small">No hay combinación Ateneo/Final de 0 a 100 que alcance.</p></div>`;
-        }
-        return `<div class="mini"><b>${obj.label}</b><br><span class="pill ok">Desde Ateneo ${fmt(best.oral)}</span><p class="small">Con ese Ateneo, Final mínima ≈ ${fmt(best.rf)}.</p></div>`;
-      }).join("");
-
-      let html = `<div class="mutedBox">
-        <b>Ateneo mínimo para habilitar Final:</b> 
-        <span class="pill ${habilS.cls}">${habilS.txt}</span>
-        <p class="small">Si una fila dice “No habilita”, aunque matemáticamente pudiera dar promedio global, no sirve porque la Media Parcial queda bajo 60.</p>
-      </div>
-      <div class="targetCards">${quickCards}</div>
-      <div class="dependencyGrid">`;
-
-      objectives.forEach(obj => {
-        let rows = "";
-        for(let oral=0; oral<=100; oral+=step){
-          const ta = calcTA(oral, c.avgEntregasPct);
-          const mp = calcMP(c.p1, c.p2, oral, c.avgEntregasPct);
-          const rf = requiredFinal(obj.min, mp);
-          const s = finalStatus(rf, mp);
-          rows += `<tr>
-            <td>${oral}</td>
-            <td>${fmt(ta)}</td>
-            <td>${fmt(mp)}</td>
-            <td><span class="pill ${s.cls}">${s.txt}</span></td>
-          </tr>`;
-        }
-
-        html += `<div>
-          <div class="indiceTitle">
-            <h3>${obj.label}</h3>
-            <span class="pill info">Global ≥ ${obj.min}</span>
+        <section class="panel card" aria-labelledby="resumen">
+          <h2 id="resumen">Resumen de tus notas</h2>
+          <div class="summary-grid">
+            <div class="metric">
+              <span>Promedio de entregas</span>
+              <strong id="entregas-promedio">--</strong>
+            </div>
+            <div class="metric">
+              <span>Ateneo convertido</span>
+              <strong id="ateneo-porcentaje">--</strong>
+            </div>
+            <div class="metric">
+              <span>Tarea Academica</span>
+              <strong id="tarea">--</strong>
+            </div>
+            <div class="metric">
+              <span>Media Parcial</span>
+              <strong id="media">--</strong>
+            </div>
+            <div class="metric">
+              <span>Habilitacion a Final</span>
+              <strong id="habilita">--</strong>
+            </div>
+            <div class="metric">
+              <span>Mejor indice posible</span>
+              <strong id="max-indice">--</strong>
+            </div>
           </div>
-          <div class="tableWrap">
+        </section>
+
+        <section class="panel card" aria-labelledby="final-necesaria">
+          <h2 id="final-necesaria">Final minima necesaria para cada indice</h2>
+          <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>Ateneo</th>
-                  <th>Tarea Acad.</th>
-                  <th>Media Parcial</th>
-                  <th>Final necesaria</th>
+                  <th>Indice</th>
+                  <th>Promedio global necesario</th>
+                  <th>Final minima</th>
+                  <th>Interpretacion</th>
                 </tr>
               </thead>
-              <tbody>${rows}</tbody>
+              <tbody id="results-body">
+                <tr>
+                  <td colspan="4">Todavia faltan datos.</td>
+                </tr>
+              </tbody>
             </table>
           </div>
-        </div>`;
-      });
+          <p class="small" style="margin-top: 10px;">
+            El indice 1 significa insuficiente: ocurre cuando el promedio global queda por debajo de 60.
+          </p>
+        </section>
+      </section>
+    </div>
+  </main>
 
-      html += `</div>`;
-      box.innerHTML = html;
+  <script>
+    const fields = ["p1", "p2", "e1", "e2", "e3", "e4", "ateneo"];
+    const targets = [
+      { index: "Indice 5", range: "90 a 100", min: 90 },
+      { index: "Indice 4", range: "80 a 89", min: 80 },
+      { index: "Indice 3", range: "70 a 79", min: 70 },
+      { index: "Indice 2", range: "60 a 69", min: 60 }
+    ];
+
+    function value(id) {
+      const raw = document.getElementById(id).value.replace(",", ".");
+      const n = Number(raw);
+      return Number.isFinite(n) && raw !== "" ? n : null;
     }
 
-    function renderMatrix(c){
-      const box = document.getElementById("matrix");
-      const target = parseFloat(document.getElementById("target").value);
-      const step = parseInt(document.getElementById("step").value, 10);
+    function fmt(n) {
+      if (!Number.isFinite(n)) return "--";
+      return (Math.round(n * 100) / 100).toFixed(2);
+    }
 
-      if(c.p1 === null || c.p2 === null || c.avgEntregasPct === null){
-        box.innerHTML = `<div class="note">Falta completar Parcial 1, Parcial 2 y las 4 entregas.</div>`;
+    function finalBadge(requiredFinal, mediaParcial) {
+      if (mediaParcial < 60) {
+        return {
+          className: "bad",
+          label: "No habilita",
+          detail: "Tu Media Parcial esta por debajo de 60, entonces no puedes ir a Final."
+        };
+      }
+
+      if (requiredFinal <= 0) {
+        return {
+          className: "ok",
+          label: "0.00",
+          detail: "Ya alcanzas este indice aunque saques 0 en la Final."
+        };
+      }
+
+      if (requiredFinal <= 100) {
+        return {
+          className: "warn",
+          label: fmt(requiredFinal),
+          detail: "Necesitas por lo menos esta nota en la Final."
+        };
+      }
+
+      return {
+        className: "bad",
+        label: "Imposible",
+        detail: "Necesitarias " + fmt(requiredFinal) + " en la Final, o sea, mas de 100."
+      };
+    }
+
+    function indexFromGlobal(global) {
+      if (global >= 90) return "5";
+      if (global >= 80) return "4";
+      if (global >= 70) return "3";
+      if (global >= 60) return "2";
+      return "1";
+    }
+
+    function validate(values) {
+      const errors = [];
+
+      if (values.p1 === null || values.p2 === null || values.ateneo === null || values.entregas.some(v => v === null)) {
+        errors.push("Completa todos los campos para calcular.");
+      }
+
+      [["Parcial 1", values.p1], ["Parcial 2", values.p2]].forEach(([label, n]) => {
+        if (n !== null && (n < 0 || n > 100)) errors.push(label + " debe estar entre 0 y 100.");
+      });
+
+      values.entregas.forEach((n, i) => {
+        if (n !== null && (n < 1 || n > 10)) errors.push("Entrega " + (i + 1) + " debe estar entre 1 y 10.");
+      });
+
+      if (values.ateneo !== null && (values.ateneo < 1 || values.ateneo > 30)) {
+        errors.push("El Ateneo oral debe estar entre 1 y 30.");
+      }
+
+      return errors;
+    }
+
+    function calculate() {
+      const values = {
+        p1: value("p1"),
+        p2: value("p2"),
+        entregas: [value("e1"), value("e2"), value("e3"), value("e4")],
+        ateneo: value("ateneo")
+      };
+
+      const status = document.getElementById("status");
+      const errors = validate(values);
+
+      if (errors.length > 0) {
+        status.className = "status-card " + (errors.length === 1 && errors[0].startsWith("Completa") ? "info" : "bad");
+        status.innerHTML = "<p>" + errors.join("<br>") + "</p>";
+        resetOutputs();
         return;
       }
 
-      const objectiveLabel = gradeIndex(target);
-      let rows = "";
-      for(let oral=0; oral<=100; oral+=step){
-        const ta = calcTA(oral, c.avgEntregasPct);
-        const mp = calcMP(c.p1, c.p2, oral, c.avgEntregasPct);
-        const reqF = requiredFinal(target, mp);
-        const s = finalStatus(reqF, mp);
-        const habil = mp >= 60 ? `<span class="pill ok">Sí</span>` : `<span class="pill bad">No</span>`;
-        rows += `<tr>
-          <td>${oral}</td>
-          <td>${fmt(ta)}</td>
-          <td>${fmt(mp)}</td>
-          <td>${habil}</td>
-          <td><span class="pill ${s.cls}">${s.txt}</span></td>
-        </tr>`;
+      const entregasPromedio = values.entregas.reduce((sum, n) => sum + n, 0) / values.entregas.length;
+      const entregasPorcentaje = entregasPromedio * 10;
+      const ateneoPorcentaje = (values.ateneo / 30) * 100;
+      const tarea = (entregasPorcentaje * 0.30) + (ateneoPorcentaje * 0.70);
+      const mediaParcial = (values.p1 + values.p2 + tarea) / 3;
+      const maxGlobal = (mediaParcial * 0.60) + 40;
+      const habilita = mediaParcial >= 60;
+
+      document.getElementById("entregas-promedio").textContent = fmt(entregasPromedio) + " / 10";
+      document.getElementById("ateneo-porcentaje").textContent = fmt(ateneoPorcentaje) + "%";
+      document.getElementById("tarea").textContent = fmt(tarea);
+      document.getElementById("media").textContent = fmt(mediaParcial);
+      document.getElementById("habilita").textContent = habilita ? "Si" : "No";
+      document.getElementById("max-indice").textContent = habilita ? indexFromGlobal(maxGlobal) : "1";
+
+      if (habilita) {
+        status.className = "status-card good";
+        status.innerHTML = "<p><span class='ok-text'>Estas habilitado para la Final.</span> Tu Media Parcial es <strong>" + fmt(mediaParcial) + "</strong>. Mira abajo la Final minima para cada indice.</p>";
+      } else {
+        status.className = "status-card bad";
+        status.innerHTML = "<p><span class='bad-text'>No estas habilitado para la Final.</span> Tu Media Parcial es <strong>" + fmt(mediaParcial) + "</strong>, y el minimo para habilitar es 60.</p>";
       }
 
-      box.innerHTML =
-        `<div class="tableWrap"><table>
-          <thead><tr><th>Ateneo</th><th>Tarea Acad.</th><th>Media Parcial</th><th>Habilitado</th><th>Final necesaria para ${objectiveLabel}</th></tr></thead>
-          <tbody>${rows}</tbody>
-        </table></div>`;
+      renderTable(mediaParcial);
     }
 
-    function clearSimulation(){
-      ["oral","final"].forEach(id => document.getElementById(id).value = "");
-      calculate();
+    function renderTable(mediaParcial) {
+      const body = document.getElementById("results-body");
+      body.innerHTML = targets.map(target => {
+        const requiredFinal = (target.min - (mediaParcial * 0.60)) / 0.40;
+        const result = finalBadge(requiredFinal, mediaParcial);
+
+        return "<tr>" +
+          "<td><strong>" + target.index + "</strong></td>" +
+          "<td>" + target.range + "</td>" +
+          "<td><span class='badge " + result.className + "'>" + result.label + "</span></td>" +
+          "<td>" + result.detail + "</td>" +
+        "</tr>";
+      }).join("");
     }
 
-    function clearAll(){
-      ["p1","p2","e1","e2","e3","e4","oral","final"].forEach(id => document.getElementById(id).value = "");
-      calculate();
+    function resetOutputs() {
+      document.getElementById("entregas-promedio").textContent = "--";
+      document.getElementById("ateneo-porcentaje").textContent = "--";
+      document.getElementById("tarea").textContent = "--";
+      document.getElementById("media").textContent = "--";
+      document.getElementById("habilita").textContent = "--";
+      document.getElementById("max-indice").textContent = "--";
+      document.getElementById("results-body").innerHTML = "<tr><td colspan='4'>Todavia faltan datos.</td></tr>";
     }
 
-    function fillMaxEntregas(){
-      ["e1","e2","e3","e4"].forEach(id => document.getElementById(id).value = "10");
-      calculate();
+    function clearAll() {
+      fields.forEach(id => {
+        document.getElementById(id).value = "";
+      });
+      const status = document.getElementById("status");
+      status.className = "status-card info";
+      status.innerHTML = "<p>Completa tus notas para ver cuanto necesitas en la Final.</p>";
+      resetOutputs();
     }
 
-    calculate();
+    fields.forEach(id => {
+      document.getElementById(id).addEventListener("input", calculate);
+    });
+
+    document.getElementById("calculate").addEventListener("click", calculate);
+    document.getElementById("clear").addEventListener("click", clearAll);
   </script>
 </body>
 </html>
