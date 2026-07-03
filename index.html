@@ -392,14 +392,15 @@
         </div>
         <div class="explain-box">
           <strong>2. El app calcula la Tarea Academica</strong>
-          <p>Las entregas valen 30% y el Ateneo oral vale 70%. El Ateneo se convierte automaticamente a porcentaje.</p>
+          <p>Las entregas valen 30% y el Ateneo oral vale 70%. El Ateneo se convierte automaticamente a porcentaje y la Tarea Academica se redondea a numero entero.</p>
         </div>
         <div class="explain-box">
           <strong>3. El app calcula la Final necesaria</strong>
           <p>La Media Parcial vale 60% del promedio global. La Final vale 40%.</p>
         </div>
       </div>
-      <div class="formula">Tarea Academica = 30% entregas + 70% Ateneo oral
+      <div class="formula">Tarea Academica exacta = 30% entregas + 70% Ateneo oral
+Tarea Academica usada = Tarea Academica exacta aproximada al numero entero mas cercano
 Media Parcial = (Parcial 1 + Parcial 2 + Tarea Academica) / 3
 Promedio Global = 60% Media Parcial + 40% Final
 
@@ -618,7 +619,8 @@ Indices:
       const entregasPromedio = values.entregas.reduce((sum, n) => sum + n, 0) / values.entregas.length;
       const entregasPorcentaje = entregasPromedio * 10;
       const ateneoPorcentaje = (values.ateneo / 30) * 100;
-      const tarea = (entregasPorcentaje * 0.30) + (ateneoPorcentaje * 0.70);
+      const tareaExacta = (entregasPorcentaje * 0.30) + (ateneoPorcentaje * 0.70);
+      const tarea = Math.round(tareaExacta);
       const mediaParcial = (values.p1 + values.p2 + tarea) / 3;
       const maxGlobal = (mediaParcial * 0.60) + 40;
       const habilita = mediaParcial >= 60;
